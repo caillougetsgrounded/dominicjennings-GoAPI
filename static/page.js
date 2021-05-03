@@ -61,7 +61,7 @@ module.exports = function (req, res, url) {
 			break;
 		}
 		
-		case '/videomaker/full': {
+		case '/videomaker/full/': {
 			let presave = query.movieId && query.movieId.startsWith('m') ? query.movieId :
 				`m-${fUtil[query.noAutosave ? 'getNextFileId' : 'fillNextFileId']('movie-', '.xml')}`;
 			title = 'Video Editor';
