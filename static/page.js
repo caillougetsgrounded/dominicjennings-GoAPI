@@ -12,7 +12,7 @@ function toParamString(table) {
 	).join(' ');
 }
 function toObjectString(attrs, params) {
-	return `<object ${Object.keys(attrs).map(key =>
+	return `<object id="obj" ${Object.keys(attrs).map(key =>
 		`${key}="${attrs[key].replace(/"/g, "\\\"")}"`
 	).join(' ')}>${toParamString(params)}</object>`;
 }
@@ -23,7 +23,7 @@ module.exports = function (req, res, url) {
 
 	var attrs, params, title;
 	switch (url.pathname) {
-		case '/charactercreator/': {
+		case '/cc': {
 			title = 'Character Creator';
 			attrs = {
 				data: process.env.SWF_URL + '/cc.swf', // data: 'cc_.swf',
@@ -31,10 +31,10 @@ module.exports = function (req, res, url) {
 			};
 			params = {
 				flashvars: {
-					'apiserver':'/','m_mode':'school','isLogin':'Y','isEmbed':'0','ctc':'go','tlang':'en_US',
-                                        'storePath': process.env.STORE_URL + '/<store>',
-                                        'clientThemePath': process.env.CLIENT_URL + '/<client_theme>',
-                                        'appCode':'go','page':'','siteId':'go','userId':'0TBAAga2Mn6g','themeId':'family','bs':'adam','ut':30,'ft':'_sticky_filter_guy'
+					'apiserver': '/', 'storePath': process.env.STORE_URL + '/<store>',
+					'clientThemePath': process.env.CLIENT_URL + '/<client_theme>', 'original_asset_id': query['id'] || null,
+					'themeId': 'business', 'ut': 60, 'bs': 'default', 'appCode': 'go', 'page': '', 'siteId': 'go',
+					'm_mode': 'school', 'isLogin': 'Y', 'isEmbed': 1, 'ctc': 'go', 'tlang': 'en_US',
 				},
 				allowScriptAccess: 'always',
 				movie: process.env.SWF_URL + '/cc.swf', // 'http://localhost/cc.swf'
@@ -42,19 +42,18 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
-		case '/character_creator/': {
+		case '/cc_browser': {
 			title = 'Character Creator Browser';
 			attrs = {
 				data: process.env.SWF_URL + '/cc_browser.swf', // data: 'cc_browser_.swf',
-				type: 'application/x-shockwave-flash', id: 'ccbrowser', width: '100%', height: '100%',
+				type: 'application/x-shockwave-flash', id: 'char_creator', width: '100%', height: '100%',
 			};
 			params = {
 				flashvars: {
-					'apiserver':'/','isEmbed':'0','ctc':'go','tlang':'en_US',
-                                        'storePath': process.env.STORE_URL + '/<store>',
-                                        'clientThemePath': process.env.CLIENT_URL + '/<client_theme>',
-                                        'appCode':'go','siteId':'school','st':'','userId':'0DyHqK6Yj9dM','ut':23,'uisa':0,'themeId':'family',
-                                        'u_info_school':'OjI6c2xoVVM3MWJIX05DMnA4cmRBQ2dFd3JvNE5xc2JEc2o4UFB2X1dVd2Eya2RPQisxVTl4d3ZHZHJPYnI4QURFNENWMjNkYm12WFdlUGxLT0g0OG4rekF5ajZhWGRGVTlocmJ4S1JhSWhCVXJlTF9BbXdyQUp3PQ==',
+					'apiserver': '/', 'storePath': process.env.STORE_URL + '/<store>',
+					'clientThemePath': process.env.CLIENT_URL + '/<client_theme>', 'original_asset_id': query['id'] || null,
+					'themeId': 'business', 'ut': 60, 'bs': 'default', 'appCode': 'go', 'page': '', 'siteId': 'go',
+					'm_mode': 'school', 'isLogin': 'Y', 'isEmbed': 1, 'ctc': 'go', 'tlang': 'en_US',
 				},
 				allowScriptAccess: 'always',
 				movie: process.env.SWF_URL + '/cc_browser.swf', // 'http://localhost/cc_browser.swf'
@@ -62,9 +61,9 @@ module.exports = function (req, res, url) {
 			break;
 		}
 		
-		case '/videomaker/full/': {
+		case '/videomaker/full': {
 			let presave = query.movieId && query.movieId.startsWith('m') ? query.movieId :
-				`m-${fUtil[query.Autosave ? 'getNextFileId' : 'fillNextFileId']('movie-', '.xml')}`;
+				`m-${fUtil[query.noAutosave ? 'getNextFileId' : 'fillNextFileId']('movie-', '.xml')}`;
 			title = 'Video Editor';
 			attrs = {
 				data: process.env.SWF_URL + '/go_full.swf',
@@ -72,12 +71,10 @@ module.exports = function (req, res, url) {
 			};
 			params = {
 				flashvars: {
-					'apiserver':'/','storePath': process.env.STORE_URL + '/<store>',
-                                        'clientThemePath': process.env.CLIENT_URL + '/<client_theme>','ut':23,'isEmbed':0,'nextUrl':'/player?movieId=<movieId>',
-                                        'lid':'13','ctc':'go','tlang':'en_US',
-                                        'siteId':'13','appCode':'go','retut':1,
-                                        'tray':'custom','isWide':1,'goteam_draft_only':0,
-
+					'apiserver': '/', 'storePath': process.env.STORE_URL + '/<store>', 'isEmbed': 0, 'ctc': 'go',
+					'ut': 23, 'bs': 'default', 'appCode': 'go', 'page': '', 'siteId': 'go', 'lid': 13, 'isLogin': 'Y', 'retut': 0,
+					'clientThemePath': process.env.CLIENT_URL + '/<client_theme>', 'themeId': 'business', 'tlang': 'en_US',
+					'presaveId': presave, 'goteam_draft_only': 0, 'isWide': 1, 'nextUrl': '/pages/html/list.html',
 				},
 				allowScriptAccess: 'always',
 			};
